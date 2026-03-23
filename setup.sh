@@ -14,7 +14,8 @@ sudo apt-get install -y \
     python3-venv \
     python3-full \
     git \
-    fonts-dejavu-core
+    fonts-dejavu-core \
+    swig
 
 # Create virtual environment
 echo "[3/6] Creating virtual environment (.venv)..."
