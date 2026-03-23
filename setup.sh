@@ -22,7 +22,7 @@ python3 -m venv .venv
 
 # Install Python dependencies into venv
 echo "[4/6] Installing Python packages into virtual environment..."
-.venv/bin/pip install RPi.GPIO spidev pillow numpy
+.venv/bin/pip install RPi.GPIO spidev pillow numpy gpiozero lgpio
 
 # Enable SPI if not already enabled
 echo "[5/6] Enabling SPI interface..."
