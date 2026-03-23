@@ -8,22 +8,25 @@ echo "[1/6] Updating package list..."
 sudo apt-get update
 
 # Install system dependencies
+# gpiozero and lgpio are installed via apt because they require native libs
 echo "[2/6] Installing system dependencies..."
 sudo apt-get install -y \
     python3-pip \
     python3-venv \
     python3-full \
+    python3-gpiozero \
+    python3-lgpio \
     git \
-    fonts-dejavu-core \
-    swig
+    fonts-dejavu-core
 
-# Create virtual environment
+# Create virtual environment with access to system site-packages
+# (needed so gpiozero/lgpio installed via apt are visible inside the venv)
 echo "[3/6] Creating virtual environment (.venv)..."
-python3 -m venv .venv
+python3 -m venv --system-site-packages .venv
 
-# Install Python dependencies into venv
+# Install remaining Python dependencies into venv
 echo "[4/6] Installing Python packages into virtual environment..."
-.venv/bin/pip install RPi.GPIO spidev pillow numpy gpiozero lgpio
+.venv/bin/pip install spidev pillow numpy
 
 # Enable SPI if not already enabled
 echo "[5/6] Enabling SPI interface..."
