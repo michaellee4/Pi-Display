@@ -20,24 +20,24 @@ def main():
     image = Image.new('1', (epd.width, epd.height), 255)  # white background
     draw = ImageDraw.Draw(image)
 
-    font_large = ImageFont.truetype(FONT_PATH, 72)
-    font_small = ImageFont.truetype(FONT_PATH, 36)
+    cx, cy = epd.width // 2, epd.height // 2
+    r = 200  # face radius
 
-    # Center "Hello World!" on the display
-    text = "Hello World!"
-    bbox = draw.textbbox((0, 0), text, font=font_large)
-    text_w = bbox[2] - bbox[0]
-    text_h = bbox[3] - bbox[1]
-    x = (epd.width - text_w) // 2
-    y = (epd.height - text_h) // 2
+    # Face outline
+    draw.ellipse((cx - r, cy - r, cx + r, cy + r), outline=0, width=6)
 
-    draw.text((x, y), text, font=font_large, fill=0)
+    # Eyes
+    eye_r = 20
+    eye_y = cy - 70
+    draw.ellipse((cx - 80 - eye_r, eye_y - eye_r, cx - 80 + eye_r, eye_y + eye_r), fill=0)
+    draw.ellipse((cx + 80 - eye_r, eye_y - eye_r, cx + 80 + eye_r, eye_y + eye_r), fill=0)
 
-    # Subtitle
-    sub = "Waveshare 13.3\" E-Ink HAT (K)"
-    sub_bbox = draw.textbbox((0, 0), sub, font=font_small)
-    sub_w = sub_bbox[2] - sub_bbox[0]
-    draw.text(((epd.width - sub_w) // 2, y + text_h + 20), sub, font=font_small, fill=0)
+    # Smile (arc)
+    smile_margin = 80
+    draw.arc(
+        (cx - r + smile_margin, cy - r + smile_margin, cx + r - smile_margin, cy + r - smile_margin),
+        start=20, end=160, fill=0, width=6
+    )
 
     print("Sending to display (this takes ~15-20 seconds)...")
     epd.display(epd.getbuffer(image))
