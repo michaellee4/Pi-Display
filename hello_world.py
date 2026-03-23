@@ -1,114 +1,139 @@
 import sys
 import os
 import time
+from datetime import datetime, timedelta
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'e-Paper/RaspberryPi_JetsonNano/python/lib'))
 
 from waveshare_epd import epd13in3k
 from PIL import Image, ImageDraw, ImageFont
 
-FONT_PATH = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
-FONT_PATH_REG = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+FONT_PATH      = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+FONT_PATH_REG  = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
 
-# March 2026 starts on Sunday
-MONTH_TITLE = "March 2026"
-START_DOW = 0  # 0 = Sunday
-DAYS_IN_MONTH = 31
-DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-TODAY = 22
+# Mock departures from Grove St — (destination, minutes_from_now, status)
+DEPARTURES = [
+    ("World Trade Center",  2,  "ON TIME"),
+    ("33rd Street",         6,  "ON TIME"),
+    ("Journal Square",      9,  "ON TIME"),
+    ("World Trade Center",  13, "DELAYED"),
+    ("Newark",              17, "ON TIME"),
+    ("Hoboken",             21, "ON TIME"),
+    ("33rd Street",         25, "ON TIME"),
+    ("World Trade Center",  31, "ON TIME"),
+]
 
-EVENTS = {
-    3:  ["Team Standup 9am"],
-    7:  ["Birthday Party 6pm"],
-    10: ["Doctor Appt 2pm"],
-    14: ["Pi Day!"],
-    17: ["St. Patrick's Day", "Lunch w/ Sarah"],
-    20: ["Spring Equinox", "Yoga Class 7pm"],
-    22: ["Project Deadline"],
-    25: ["Coffee w/ Jake 10am"],
-    28: ["Movie Night 8pm"],
-}
-
-def draw_calendar(epd):
+def draw_schedule(epd):
     W, H = epd.width, epd.height  # 960 x 680
     image = Image.new('1', (W, H), 255)
     draw = ImageDraw.Draw(image)
 
-    font_title = ImageFont.truetype(FONT_PATH, 48)
-    font_day   = ImageFont.truetype(FONT_PATH, 22)
-    font_date  = ImageFont.truetype(FONT_PATH, 26)
-    font_event = ImageFont.truetype(FONT_PATH_REG, 15)
+    font_huge   = ImageFont.truetype(FONT_PATH, 52)
+    font_large  = ImageFont.truetype(FONT_PATH, 34)
+    font_medium = ImageFont.truetype(FONT_PATH, 26)
+    font_small  = ImageFont.truetype(FONT_PATH, 22)
+    font_reg    = ImageFont.truetype(FONT_PATH_REG, 22)
 
-    HEADER_H = 60
-    DAYNAME_H = 36
-    COLS = 7
-    ROWS = 6
-    col_w = W // COLS
-    row_h = (H - HEADER_H - DAYNAME_H) // ROWS
+    now = datetime.now()
 
-    # Title
-    title_bbox = draw.textbbox((0, 0), MONTH_TITLE, font=font_title)
-    title_w = title_bbox[2] - title_bbox[0]
-    draw.text(((W - title_w) // 2, 8), MONTH_TITLE, font=font_title, fill=0)
+    # ── Header bar ──────────────────────────────────────────────────────────
+    HEADER_H = 90
+    draw.rectangle((0, 0, W, HEADER_H), fill=0)
 
-    # Day name headers
-    day_y = HEADER_H
-    for i, name in enumerate(DAY_NAMES):
-        x = i * col_w
-        draw.rectangle((x, day_y, x + col_w, day_y + DAYNAME_H), fill=0)
-        bbox = draw.textbbox((0, 0), name, font=font_day)
-        tx = x + (col_w - (bbox[2] - bbox[0])) // 2
-        ty = day_y + (DAYNAME_H - (bbox[3] - bbox[1])) // 2
-        draw.text((tx, ty), name, font=font_day, fill=255)
+    # Station name
+    draw.text((24, 16), "Grove Street", font=font_huge, fill=255)
 
-    # Grid lines and dates
-    grid_top = HEADER_H + DAYNAME_H
-    day = 1
-    for row in range(ROWS):
-        for col in range(COLS):
-            cell_num = row * COLS + col
-            if cell_num < START_DOW or day > DAYS_IN_MONTH:
-                # Empty cell
-                x0 = col * col_w
-                y0 = grid_top + row * row_h
-                draw.rectangle((x0, y0, x0 + col_w, y0 + row_h), outline=0, width=1)
-                continue
+    # "PATH" badge on the right
+    badge_text = "PATH"
+    badge_bbox = draw.textbbox((0, 0), badge_text, font=font_large)
+    badge_w = badge_bbox[2] - badge_bbox[0] + 24
+    badge_x = W - badge_w - 20
+    draw.rectangle((badge_x, 18, badge_x + badge_w, HEADER_H - 18), outline=255, width=3)
+    draw.text((badge_x + 12, 22), badge_text, font=font_large, fill=255)
 
-            x0 = col * col_w
-            y0 = grid_top + row * row_h
-            x1 = x0 + col_w
-            y1 = y0 + row_h
+    # Current time
+    time_str = now.strftime("%-I:%M %p")
+    time_bbox = draw.textbbox((0, 0), time_str, font=font_medium)
+    time_x = badge_x - (time_bbox[2] - time_bbox[0]) - 30
+    draw.text((time_x, 30), time_str, font=font_medium, fill=255)
 
-            # Cell border — thicker for today
-            if day == TODAY:
-                draw.rectangle((x0, y0, x1, y1), outline=0, width=3)
-            else:
-                draw.rectangle((x0, y0, x1, y1), outline=0, width=1)
+    # ── Column headers ───────────────────────────────────────────────────────
+    COL_H = 44
+    col_y = HEADER_H
+    draw.rectangle((0, col_y, W, col_y + COL_H), fill=0)
 
-            # Date number
-            date_str = str(day)
-            if day == TODAY:
-                # Black circle behind today's date
-                r = 16
-                draw.ellipse((x0 + 6, y0 + 4, x0 + 6 + r*2, y0 + 4 + r*2), fill=0)
-                draw.text((x0 + 6 + r - draw.textbbox((0,0), date_str, font=font_date)[2]//2,
-                            y0 + 4 + r - draw.textbbox((0,0), date_str, font=font_date)[3]//2),
-                           date_str, font=font_date, fill=255)
-            else:
-                draw.text((x0 + 8, y0 + 4), date_str, font=font_date, fill=0)
+    COL_DEST   = 0
+    COL_TIME   = 560
+    COL_MINS   = 720
+    COL_STATUS = 840
 
-            # Events
-            if day in EVENTS:
-                for i, event in enumerate(EVENTS[day][:2]):  # max 2 events per cell
-                    ey = y0 + 34 + i * 18
-                    if ey + 16 < y1:
-                        # Truncate text to fit cell width
-                        text = event
-                        while draw.textbbox((0,0), text, font=font_event)[2] > col_w - 10 and len(text) > 3:
-                            text = text[:-4] + '...'
-                        draw.text((x0 + 5, ey), text, font=font_event, fill=0)
+    headers = [
+        (COL_DEST   + 20, "DESTINATION"),
+        (COL_TIME   + 10, "DEPARTS"),
+        (COL_MINS   + 10, "MINS"),
+        (COL_STATUS + 10, "STATUS"),
+    ]
+    for x, label in headers:
+        draw.text((x, col_y + 10), label, font=font_small, fill=255)
 
-            day += 1
+    # Vertical dividers in header
+    for x in (COL_TIME, COL_MINS, COL_STATUS):
+        draw.line((x, col_y, x, col_y + COL_H), fill=255, width=1)
+
+    # ── Departure rows ───────────────────────────────────────────────────────
+    ROW_H = (H - HEADER_H - COL_H) // len(DEPARTURES)
+    row_top = HEADER_H + COL_H
+
+    for i, (dest, mins, status) in enumerate(DEPARTURES):
+        y0 = row_top + i * ROW_H
+        y1 = y0 + ROW_H
+
+        # Alternating row shading (light stripe via dashed pattern — use outline rect)
+        if i % 2 == 0:
+            draw.rectangle((0, y0, W, y1 - 1), outline=0, width=1)
+        else:
+            draw.rectangle((0, y0, W, y1 - 1), fill=0)
+
+        txt_fill   = 255 if i % 2 != 0 else 0
+        delay_fill = txt_fill  # will invert for DELAYED below
+
+        depart_time = now + timedelta(minutes=mins)
+        time_str = depart_time.strftime("%-I:%M %p")
+        mins_str = f"{mins} min"
+
+        ty = y0 + (ROW_H - 26) // 2
+
+        # Destination
+        draw.text((COL_DEST + 20, ty), dest, font=font_reg, fill=txt_fill)
+
+        # Departure time
+        draw.text((COL_TIME + 10, ty), time_str, font=font_reg, fill=txt_fill)
+
+        # Minutes
+        draw.text((COL_MINS + 10, ty), mins_str, font=font_reg, fill=txt_fill)
+
+        # Status — highlight DELAYED with inverted badge
+        if status == "DELAYED":
+            s_bbox = draw.textbbox((0, 0), status, font=font_small)
+            s_w = s_bbox[2] - s_bbox[0]
+            s_h = s_bbox[3] - s_bbox[1]
+            pad = 6
+            bx = COL_STATUS + 10
+            by = ty - pad
+            draw.rectangle((bx - pad, by, bx + s_w + pad, by + s_h + pad * 2),
+                            fill=txt_fill)
+            draw.text((bx, ty), status, font=font_small, fill=delay_fill ^ 255)
+        else:
+            draw.text((COL_STATUS + 10, ty), status, font=font_small, fill=txt_fill)
+
+        # Vertical dividers
+        for x in (COL_TIME, COL_MINS, COL_STATUS):
+            draw.line((x, y0, x, y1), fill=txt_fill, width=1)
+
+    # ── Footer ───────────────────────────────────────────────────────────────
+    draw.rectangle((0, H - 28, W, H), fill=0)
+    footer = "Departures from Grove St  |  NJ PATH  |  Last updated: " + now.strftime("%-I:%M:%S %p")
+    draw.text((16, H - 22), footer, font=ImageFont.truetype(FONT_PATH_REG, 16), fill=255)
 
     return image
 
@@ -118,8 +143,8 @@ def main():
     epd.init()
     epd.Clear()
 
-    print("Drawing calendar...")
-    image = draw_calendar(epd)
+    print("Drawing departure board...")
+    image = draw_schedule(epd)
     print("Sending to display (this takes ~15-20 seconds)...")
     epd.display(epd.getbuffer(image))
     print("Done! Sleeping display...")
