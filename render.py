@@ -29,7 +29,7 @@ def screenshot_html(html_path: str) -> Image.Image:
     try:
         subprocess.run(
             [
-                'chromium-browser',
+                'chromium',
                 '--headless',
                 '--disable-gpu',
                 '--no-sandbox',
