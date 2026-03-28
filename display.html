@@ -8,10 +8,12 @@
     body {
       width: 960px;
       height: 680px;
-      background: white;
+      background: #e8e8e8;
       font-family: 'Liberation Sans', 'DejaVu Sans', Arial, sans-serif;
       overflow: hidden;
       display: flex;
+      gap: 8px;
+      padding: 8px;
       border-radius: 16px;
     }
 
@@ -19,13 +21,12 @@
        LEFT PANEL — Calendar (420px)
     ════════════════════════════════════════════════════════════ */
     .calendar {
-      width: 576px;
-      min-width: 576px;
-      height: 680px;
+      width: 560px;
+      min-width: 560px;
+      height: 664px;
       display: flex;
       flex-direction: column;
-      border-right: 3px solid #ccc;
-      border-radius: 16px 0 0 16px;
+      border-radius: 16px;
       overflow: hidden;
     }
 
@@ -33,7 +34,11 @@
       background: #2c2c2c;
       color: white;
       text-align: center;
-      padding: 12px 0 10px;
+      height: 68px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
     }
 
     .cal-header .month {
@@ -61,7 +66,10 @@
       font-size: 12px;
       font-weight: bold;
       letter-spacing: 1px;
-      padding: 5px 0;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .cal-grid {
@@ -126,8 +134,8 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      height: 680px;
-      border-radius: 0 16px 16px 0;
+      height: 664px;
+      border-radius: 16px;
       overflow: hidden;
     }
 
