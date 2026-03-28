@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -9,7 +11,8 @@
       width: 960px;
       height: 680px;
       background: #e8e8e8;
-      font-family: 'Liberation Sans', 'DejaVu Sans', Arial, sans-serif;
+      font-family: 'Inter', 'Liberation Sans', sans-serif;
+      font-weight: 300;
       overflow: hidden;
       display: flex;
       gap: 8px;
@@ -43,7 +46,7 @@
 
     .cal-header .month {
       font-size: 28px;
-      font-weight: bold;
+      font-weight: 600;
       letter-spacing: 2px;
     }
 
@@ -65,7 +68,7 @@
     .cal-daynames div {
       text-align: center;
       font-size: 12px;
-      font-weight: bold;
+      font-weight: 600;
       letter-spacing: 1px;
       height: 22px;
       display: flex;
@@ -101,7 +104,7 @@
 
     .date-num {
       font-size: 15px;
-      font-weight: bold;
+      font-weight: 600;
       line-height: 1;
       margin-bottom: 2px;
     }
@@ -112,7 +115,7 @@
 
     .cal-event {
       font-size: 11px;
-      font-weight: bold;
+      font-weight: 600;
       line-height: 1.3;
       white-space: nowrap;
       overflow: hidden;
@@ -167,7 +170,7 @@
 
     .dep-station .name {
       font-size: 26px;
-      font-weight: bold;
+      font-weight: 600;
       letter-spacing: -0.5px;
     }
 
@@ -182,13 +185,13 @@
 
     .dep-time {
       font-size: 22px;
-      font-weight: bold;
+      font-weight: 600;
       font-variant-numeric: tabular-nums;
     }
 
     .dep-badge {
       font-size: 13px;
-      font-weight: bold;
+      font-weight: 600;
       letter-spacing: 3px;
       border: 2px solid white;
       padding: 2px 8px;
@@ -207,7 +210,7 @@
 
     .next-train .nt-label {
       font-size: 9px;
-      font-weight: bold;
+      font-weight: 600;
       letter-spacing: 2px;
       color: #666;
       white-space: nowrap;
@@ -215,7 +218,7 @@
 
     .next-train .nt-dest {
       font-size: 24px;
-      font-weight: bold;
+      font-weight: 600;
       flex: 1;
     }
 
@@ -228,7 +231,7 @@
       background: #444;
       color: white;
       font-size: 20px;
-      font-weight: bold;
+      font-weight: 600;
       padding: 6px 14px;
       white-space: nowrap;
       border-radius: 8px;
@@ -252,7 +255,7 @@
 
     .dep-col-headers div {
       font-size: 9px;
-      font-weight: bold;
+      font-weight: 600;
       letter-spacing: 2px;
       text-transform: uppercase;
       color: #666;
@@ -276,14 +279,14 @@
 
     .dep-row:nth-child(even) { background: #f7f7f7; }
 
-    .dep-row .dest { font-size: 15px; font-weight: bold; }
+    .dep-row .dest { font-size: 15px; font-weight: 600; }
     .dep-row .time { font-size: 13px; color: #444; }
-    .dep-row .mins { font-size: 15px; font-weight: bold; }
+    .dep-row .mins { font-size: 15px; font-weight: 600; }
 
     .status-ok { font-size: 11px; letter-spacing: 1px; color: #444; }
     .status-delayed {
       font-size: 10px;
-      font-weight: bold;
+      font-weight: 600;
       letter-spacing: 1px;
       border: 2px solid #555;
       padding: 2px 6px;
