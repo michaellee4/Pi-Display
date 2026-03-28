@@ -50,7 +50,7 @@ def screenshot_html(html_path: str) -> Image.Image:
 
 def to_bw(img: Image.Image) -> Image.Image:
     """Convert an RGB image to 1-bit black & white via threshold."""
-    return img.convert('L').point(lambda x: 0 if x < 140 else 255, '1')
+    return img.convert('L').point(lambda x: 0 if x < 180 else 255, '1')
 
 
 def send_to_display(bw_img: Image.Image):
