@@ -17,7 +17,8 @@ sudo apt-get install -y \
     python3-gpiozero \
     python3-lgpio \
     git \
-    fonts-dejavu-core
+    fonts-dejavu-core \
+    chromium-browser
 
 # Create virtual environment with access to system site-packages
 # (needed so gpiozero/lgpio installed via apt are visible inside the venv)

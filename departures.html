@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 960px;
+      height: 680px;
+      background: white;
+      font-family: 'DejaVu Sans', Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    header {
+      background: black;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 88px;
+    }
+
+    header h1 {
+      font-size: 52px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .time {
+      font-size: 28px;
+    }
+
+    .badge {
+      border: 3px solid white;
+      padding: 4px 16px;
+      font-size: 32px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    .col-headers {
+      background: black;
+      color: white;
+      display: grid;
+      grid-template-columns: 1fr 160px 120px 140px;
+      padding: 0 20px;
+      height: 40px;
+      align-items: center;
+      font-size: 18px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      border-top: 1px solid #444;
+    }
+
+    .departures {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 160px 120px 140px;
+      padding: 0 20px;
+      align-items: center;
+      height: 69px;
+      border-bottom: 1px solid black;
+      font-size: 22px;
+    }
+
+    .row:nth-child(even) {
+      background: black;
+      color: white;
+    }
+
+    .destination {
+      font-weight: bold;
+    }
+
+    .mins {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .status-on-time {
+      font-size: 18px;
+    }
+
+    .status-delayed {
+      font-size: 16px;
+      font-weight: bold;
+      background: white;
+      color: black;
+      border: 2px solid black;
+      padding: 3px 8px;
+      display: inline-block;
+    }
+
+    .row:nth-child(even) .status-delayed {
+      background: black;
+      color: white;
+      border-color: white;
+    }
+
+    footer {
+      background: black;
+      color: white;
+      font-size: 15px;
+      padding: 5px 16px;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Grove Street</h1>
+    <div class="header-right">
+      <span class="time">8:42 AM</span>
+      <span class="badge">PATH</span>
+    </div>
+  </header>
+
+  <div class="col-headers">
+    <div>DESTINATION</div>
+    <div>DEPARTS</div>
+    <div>MINS</div>
+    <div>STATUS</div>
+  </div>
+
+  <div class="departures">
+    <div class="row">
+      <div class="destination">World Trade Center</div>
+      <div>8:44 AM</div>
+      <div class="mins">2 min</div>
+      <div class="status-on-time">ON TIME</div>
+    </div>
+    <div class="row">
+      <div class="destination">33rd Street</div>
+      <div>8:48 AM</div>
+      <div class="mins">6 min</div>
+      <div class="status-on-time">ON TIME</div>
+    </div>
+    <div class="row">
+      <div class="destination">Journal Square</div>
+      <div>8:51 AM</div>
+      <div class="mins">9 min</div>
+      <div class="status-on-time">ON TIME</div>
+    </div>
+    <div class="row">
+      <div class="destination">World Trade Center</div>
+      <div>8:55 AM</div>
+      <div class="mins">13 min</div>
+      <div><span class="status-delayed">DELAYED</span></div>
+    </div>
+    <div class="row">
+      <div class="destination">Newark</div>
+      <div>8:59 AM</div>
+      <div class="mins">17 min</div>
+      <div class="status-on-time">ON TIME</div>
+    </div>
+    <div class="row">
+      <div class="destination">Hoboken</div>
+      <div>9:03 AM</div>
+      <div class="mins">21 min</div>
+      <div class="status-on-time">ON TIME</div>
+    </div>
+    <div class="row">
+      <div class="destination">33rd Street</div>
+      <div>9:07 AM</div>
+      <div class="mins">25 min</div>
+      <div class="status-on-time">ON TIME</div>
+    </div>
+    <div class="row">
+      <div class="destination">World Trade Center</div>
+      <div>9:13 AM</div>
+      <div class="mins">31 min</div>
+      <div class="status-on-time">ON TIME</div>
+    </div>
+  </div>
+
+  <footer>
+    Departures from Grove St &nbsp;|&nbsp; NJ PATH &nbsp;|&nbsp; Last updated: 8:42:05 AM
+  </footer>
+
+</body>
+</html>
