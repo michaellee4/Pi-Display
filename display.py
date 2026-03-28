@@ -34,8 +34,13 @@ DARK       = 40    # header backgrounds, primary text
 BLACK      = 0
 
 # ── Fonts ────────────────────────────────────────────────────────────────────
-_BOLD = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
-_REG  = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+import platform
+if platform.system() == 'Darwin':
+    _BOLD = '/System/Library/Fonts/Helvetica.ttc'
+    _REG  = '/System/Library/Fonts/Helvetica.ttc'
+else:
+    _BOLD = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+    _REG  = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
 
 def F(bold, size):
     return ImageFont.truetype(_BOLD if bold else _REG, size)
