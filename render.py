@@ -12,7 +12,6 @@ import tempfile
 
 DISPLAY_W = 960
 DISPLAY_H = 680
-SCALE = 2  # render at 2x then downscale for sharper output
 
 EPAPER_LIB = os.path.join(os.path.dirname(__file__), 'e-Paper/RaspberryPi_JetsonNano/python/lib')
 sys.path.append(EPAPER_LIB)
@@ -36,15 +35,13 @@ def screenshot_html(html_path: str) -> Image.Image:
                 '--no-sandbox',
                 '--disable-software-rasterizer',
                 f'--screenshot={png_path}',
-                f'--window-size={DISPLAY_W * SCALE},{DISPLAY_H * SCALE}',
-                f'--force-device-scale-factor={SCALE}',
+                f'--window-size={DISPLAY_W},{DISPLAY_H}',
                 f'file://{abs_path}',
             ],
             check=True,
             capture_output=True,
         )
         img = Image.open(png_path).convert('RGB')
-        img = img.resize((DISPLAY_W, DISPLAY_H), Image.LANCZOS)
     finally:
         os.unlink(png_path)
 
@@ -52,8 +49,8 @@ def screenshot_html(html_path: str) -> Image.Image:
 
 
 def to_bw(img: Image.Image) -> Image.Image:
-    """Convert an RGB image to 1-bit black & white using Floyd-Steinberg dithering."""
-    return img.convert('L').convert('1')  # '1' mode applies dithering by default
+    """Convert an RGB image to 1-bit black & white via threshold."""
+    return img.convert('L').point(lambda x: 0 if x < 140 else 255, '1')
 
 
 def send_to_display(bw_img: Image.Image):
