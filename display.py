@@ -23,14 +23,14 @@ CAL_W   = 560
 DEP_W   = W - PAD * 2 - GAP - CAL_W   # 376
 PANEL_H = H - PAD * 2                  # 664
 
-# ── Grayscale tones ──────────────────────────────────────────────────────────
+# ── Black & white only ───────────────────────────────────────────────────────
 WHITE      = 255
-BG         = 228   # outer background
-OFF_WHITE  = 245   # alternating row tint
-LIGHT_GRAY = 210   # cell/row borders
-GRAY       = 140   # secondary text, event pills
-MID        = 80    # day-name bar
-DARK       = 40    # header backgrounds, primary text
+BG         = 0     # outer background (black)
+OFF_WHITE  = 255   # alternating rows (same as white — use borders instead)
+LIGHT_GRAY = 0     # cell/row borders → black
+GRAY       = 0     # secondary text → black
+MID        = 0     # day-name bar → black
+DARK       = 0     # header backgrounds → black
 BLACK      = 0
 
 # ── Fonts ────────────────────────────────────────────────────────────────────
